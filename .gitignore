@@ -1,0 +1,7 @@
+# IntelliJ Idea project files
+*.iml
+*.ipr
+*.iws
+
+# Maven build results
+target/
