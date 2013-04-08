@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>zip</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <files>
+        <!-- main jar -->
+        <file>
+            <source>${project.build.directory}/${project.build.finalName}.jar</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <!-- sources -->
+        <file>
+            <source>${project.build.directory}/${project.build.finalName}-sources.jar</source>
+            <outputDirectory>sources</outputDirectory>
+        </file>
+        <!-- configs -->
+        <file>
+            <source>etc/application.properties.default</source>
+            <outputDirectory>conf</outputDirectory>
+        </file>
+        <file>
+            <source>etc/log4j.properties</source>
+            <outputDirectory>conf</outputDirectory>
+        </file>
+        <!-- scripts -->
+        <file>
+            <source>bin/run.sh</source>
+            <outputDirectory>/</outputDirectory>
+            <lineEnding>unix</lineEnding>
+        </file>
+        <file>
+            <source>bin/run.bat</source>
+            <outputDirectory>/</outputDirectory>
+            <lineEnding>windows</lineEnding>
+        </file>
+    </files>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+
+    <moduleSets>
+        <moduleSet>
+            <useAllReactorProjects>true</useAllReactorProjects>
+            <binaries>
+                <includeDependencies>false</includeDependencies>
+                <outputDirectory>/</outputDirectory>
+                <outputFileNameMapping>${module.artifactId}.${module.extension}</outputFileNameMapping>
+                <unpack>false</unpack>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+
+</assembly>

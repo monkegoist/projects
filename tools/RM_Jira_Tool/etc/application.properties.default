@@ -1,0 +1,31 @@
+jira.login=...
+jira.password=...
+
+jira.hostname=jira.in.devexperts.com
+jira.port=443
+jira.scheme=https
+jira.base_url=https://jira.in.devexperts.com/
+
+results.file=results.txt
+
+project.total=5
+
+project0.jira_key=GFTSRV
+project0.name=Core
+project0.version_pattern=NV: HEAD (R-GSCORE-
+
+project1.jira_key=GFTSRV
+project1.name=Scripts
+project1.version_pattern=NV: (R-GSSCRIPT-
+
+project2.jira_key=GSINTGR
+project2.name=Integrations
+project2.version_pattern=NV: HEAD (R-GSINTGR-
+
+project3.jira_key=GSREP
+project3.name=Reporting
+project3.version_pattern=NV: HEAD (R-GSREP-
+
+project4.jira_key=GSDBWEB
+project4.name=DB Web
+project4.version_pattern=NV: HEAD (R-GSDBWEB-
