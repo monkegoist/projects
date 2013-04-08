@@ -5,3 +5,6 @@
 
 # Maven build results
 target/
+
+# Idea build results
+out/
