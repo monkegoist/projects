@@ -37,11 +37,13 @@ public final class Scheme extends DefaultScheme {
 
     private static DataRecord createQuoteRecord() {
         QuoteDescriptor descriptor = new QuoteDescriptor(
-                new StringField(0, "Symbol"),
-                new CompactIntField(1, "TimeHi"),
-                new CompactIntField(2, "TimeLo"),
-                new DecimalField(3, "Bid"),
-                new DecimalField(4, "Ask")
+                // DataObjFields
+                new StringField(0, QUOTE_RECORD_NAME + ".Symbol"),
+                // DataIntFields
+                new CompactIntField(0, QUOTE_RECORD_NAME + ".TimeHi"),
+                new CompactIntField(1, QUOTE_RECORD_NAME + ".TimeLo"),
+                new DecimalField(2, QUOTE_RECORD_NAME + ".Bid"),
+                new DecimalField(3, QUOTE_RECORD_NAME + ".Ask")
         );
 
         DataIntField[] intFields = new DataIntField[]{

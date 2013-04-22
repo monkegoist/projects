@@ -22,7 +22,7 @@ public class Client {
 
     private static final String SYMBOL = "*";
 
-    private static final String ADDRESS = "abcd";
+    private static final String ADDRESS = "gftcore:10220";
 
     private static final Scheme scheme = Scheme.getInstance();
     private static final SymbolCodec codec = scheme.getCodec();
@@ -69,6 +69,7 @@ public class Client {
         double bid = Decimal.toDouble(cur.getInt(desc.getBid().getIndex()));
         double ask = Decimal.toDouble(cur.getInt(desc.getAsk().getIndex()));
         Quote quote = new Quote(symbol, timestamp, bid, ask);
+        System.out.println(quote);
         counter.incrementAndGet();
     }
 
