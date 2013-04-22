@@ -1,6 +1,7 @@
 package com.devexperts.logvinov.zeromq;
 
 import com.devexperts.logvinov.shared.Quote;
+import com.devexperts.logvinov.shared.QuoteUtils;
 import org.zeromq.ZMQ;
 
 import java.util.Random;

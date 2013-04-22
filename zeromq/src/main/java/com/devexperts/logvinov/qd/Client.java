@@ -30,12 +30,11 @@ public class Client {
     private static AtomicInteger counter = new AtomicInteger(0);
 
     public static void main(String[] args) throws InterruptedException {
-        DataScheme scheme = Scheme.getInstance();
         DataRecord quote = scheme.findRecordByName(Scheme.QUOTE_RECORD_NAME);
         QDStream stream = QDFactory.getDefaultFactory().createStream(scheme);
         QDAgent agent = stream.createAgent(null);
         SubscriptionBuffer buffer = new SubscriptionBuffer();
-        buffer.visitRecord(quote, scheme.getCodec().getWildcardCipher(), SYMBOL);
+        buffer.visitRecord(quote, codec.getWildcardCipher(), SYMBOL);
         agent.setSubscription(buffer);
         attachListener(agent);
         ApplicationConnectionFactory acFactory = MessageConnectors.applicationConnectionFactory(
