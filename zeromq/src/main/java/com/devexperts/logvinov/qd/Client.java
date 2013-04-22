@@ -20,9 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Client {
 
-    private static final String SYMBOL = "*";
-
-    private static final String ADDRESS = "gftcore:10220";
+    private static final String ADDRESS = "localhost:5555";
 
     private static final Scheme scheme = Scheme.getInstance();
     private static final SymbolCodec codec = scheme.getCodec();
@@ -34,7 +32,7 @@ public class Client {
         QDStream stream = QDFactory.getDefaultFactory().createStream(scheme);
         QDAgent agent = stream.createAgent(null);
         SubscriptionBuffer buffer = new SubscriptionBuffer();
-        buffer.visitRecord(quote, codec.getWildcardCipher(), SYMBOL);
+        buffer.visitRecord(quote, codec.encode("EUR/USD"), "EUR/USD");
         agent.setSubscription(buffer);
         attachListener(agent);
         ApplicationConnectionFactory acFactory = MessageConnectors.applicationConnectionFactory(
@@ -61,7 +59,7 @@ public class Client {
     private static void countQuote(RecordCursor cur) {
         QuoteDescriptor desc = Scheme.getQuoteDescriptor();
         String symbol = codec.decode(cur.getCipher(), cur.getSymbol());
-        long timestamp = toLong(
+        long timestamp = QdUtils.toLong(
                 cur.getInt(desc.getTimeHi().getIndex()),
                 cur.getInt(desc.getTimeLo().getIndex())
         );
@@ -70,9 +68,5 @@ public class Client {
         Quote quote = new Quote(symbol, timestamp, bid, ask);
         System.out.println(quote);
         counter.incrementAndGet();
-    }
-
-    private static long toLong(long hi, long lo) {
-        return (hi << 32) | (lo & 0xFFFFFFFFL);
     }
 }

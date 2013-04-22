@@ -1,4 +1,6 @@
-package com.devexperts.logvinov.shared;
+package com.devexperts.logvinov.zeromq;
+
+import com.devexperts.logvinov.shared.Quote;
 
 import java.io.*;
 
