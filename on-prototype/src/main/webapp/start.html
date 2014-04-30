@@ -1,0 +1,76 @@
+<!-- HTML 5 doctype -->
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>OffsetNets Prototype</title>
+
+    <style type="text/css">
+        #loading {
+            position: absolute;
+            left: 45%;
+            top: 40%;
+            margin-left: -45px;
+            padding: 2px;
+            z-index: 20001;
+            height: auto;
+            width: 200px;
+            border: 1px solid #ccc;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        #loading a {
+            color: #225588;
+        }
+
+        #loading .loading-indicator {
+            background: white;
+            color: #444;
+            font: bold 13px tahoma, arial, helvetica;
+            padding: 10px;
+            margin: 0;
+            height: auto;
+        }
+
+        #loading .loading-indicator img {
+            margin-right: 8px;
+            float: left;
+            vertical-align: top;
+        }
+
+        #loading-msg {
+            font: normal 10px arial, tahoma, sans-serif;
+        }
+    </style>
+    <script type="text/javascript">
+        function removeLoading() {
+            var loadingElement = document.getElementById("loading");
+            var loadingElementParent = loadingElement.parentNode;
+            loadingElementParent.removeChild(loadingElement);
+        }
+    </script>
+</head>
+<body onload="removeLoading()">
+<div id="loading">
+    <div class="loading-indicator">
+        <img src="img/large-loading.gif"/>
+        OffsetNets Prototype<br/>
+        <span id="loading-msg">Loading application...</span>
+    </div>
+</div>
+
+<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+<noscript>
+    <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+    </div>
+</noscript>
+
+<script type="text/javascript" language="javascript" src="ONPrototype/ONPrototype.nocache.js"></script>
+
+</body>
+</html>
