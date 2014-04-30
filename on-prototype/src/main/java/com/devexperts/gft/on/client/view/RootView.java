@@ -19,7 +19,7 @@ import com.sencha.gxt.widget.core.client.form.NumberPropertyEditor;
 
 import static com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
 
-// todo: replace this with UiBinder
+// todo: replace markup with UiBinder
 public class RootView implements RootPresenter.Display, IsWidget {
 
     @SuppressWarnings("FieldCanBeLocal")

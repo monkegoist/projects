@@ -10,35 +10,34 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SessionRecordProvider {
+    private static final ThreadLocalRandom rand = ThreadLocalRandom.current();
+
     /**
      * Singleton to make things simpler and not mess around with Spring.
      */
     private static final SessionRecordProvider INSTANCE = new SessionRecordProvider();
 
-    private static final ThreadLocalRandom rand = ThreadLocalRandom.current();
-
     public static SessionRecordProvider getInstance() {
         return INSTANCE;
     }
 
+    // contains registered sessions along with records that were sent to client
     private final Map<String, List<Record>> sessionContainer = new ConcurrentHashMap<String, List<Record>>();
 
     public String registerSession(int instrumentsCount) {
         List<Instrument> instruments = InstrumentGenerator.generateInstruments(instrumentsCount);
         Map<Instrument, Integer> mapping = new LinkedHashMap<Instrument, Integer>();
 
-        int maxElements = 4;
+        int maxChildren = 4;
         int startIndex = 0;
-        int endIndex = rand.nextInt(startIndex, maxElements + 1);
-        while (endIndex < instrumentsCount) {
+        int endIndex;
+        while ((endIndex = rand.nextInt(startIndex, startIndex + maxChildren + 1)) < instrumentsCount) {
             List<Instrument> pack = instruments.subList(startIndex, endIndex);
             processPack(pack, mapping);
             startIndex = endIndex;
-            endIndex = rand.nextInt(startIndex, startIndex + maxElements + 1);
         }
-
-        List<Instrument> pack = instruments.subList(startIndex, instrumentsCount);
-        processPack(pack, mapping);
+        // process rest
+        processPack(instruments.subList(startIndex, instrumentsCount), mapping);
 
         List<Record> initialData = RecordGenerator.generateRecords(mapping);
 
@@ -59,7 +58,7 @@ public class SessionRecordProvider {
         if (updatesCount >= initialData.size()) {
             candidates = initialData;
         } else {
-            Collections.shuffle(initialData);
+            Collections.shuffle(initialData); // choose updated instruments at random
             candidates = initialData.subList(0, updatesCount);
         }
 

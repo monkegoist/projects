@@ -143,7 +143,7 @@ public class GXTView implements GXTPresenter.Display, IsWidget {
             // just update record
             treeGrid.getTreeStore().update(record);
         } else {
-            // todo: find out what to do in this case...
+            // todo: update record doesn't work well in this case, some other solution is needed
         }
     }
 

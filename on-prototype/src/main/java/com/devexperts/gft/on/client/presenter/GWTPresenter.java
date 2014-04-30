@@ -8,12 +8,14 @@ import com.devexperts.gft.on.shared.RecordService;
 import com.devexperts.gft.on.shared.RecordServiceAsync;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.DefaultCellTableBuilder;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.view.client.ListDataProvider;
 
 import java.util.*;
 
@@ -26,13 +28,11 @@ public class GWTPresenter implements Presenter {
      */
     @SuppressWarnings("UnusedDeclaration")
     public interface Display {
-        void addRecord(Record record);
-
-        void updateRecord(Record record);
+        void setPresenter(GWTPresenter presenter);
 
         CellTable<Record> getCellTable();
 
-        void setFieldUpdater(FieldUpdater<Record, String> fieldUpdater);
+        void setRowClickHandler(FieldUpdater<Record, ImageResource> rowClickHandler);
     }
 
     private final AppConstants constants = GWT.create(AppConstants.class);
@@ -41,6 +41,7 @@ public class GWTPresenter implements Presenter {
     private final Map<Integer, List<Record>> recordsMap = new HashMap<Integer, List<Record>>();
     private final Set<Integer> expandedNodes = new HashSet<Integer>();
 
+    private final ListDataProvider<Record> dataStore = new ListDataProvider<Record>();
     private final AppSettings settings;
     private final GWTView view;
 
@@ -51,6 +52,8 @@ public class GWTPresenter implements Presenter {
 
     @Override
     public void bind() {
+        view.setPresenter(this);
+
         final CellTable<Record> cellTable = view.getCellTable();
         cellTable.setPageSize(settings.getInstrumentsCount());
         cellTable.setTableBuilder(new DefaultCellTableBuilder<Record>(cellTable) {
@@ -66,9 +69,11 @@ public class GWTPresenter implements Presenter {
             }
         });
 
-        view.setFieldUpdater(new FieldUpdater<Record, String>() {
+        dataStore.addDataDisplay(cellTable);
+
+        view.setRowClickHandler(new FieldUpdater<Record, ImageResource>() {
             @Override
-            public void update(int index, Record object, String value) {
+            public void update(int index, Record object, ImageResource value) {
                 Integer underlying = object.getUnderlyingId();
                 // we're only interested in such cases
                 if (underlying == null) {
@@ -120,8 +125,14 @@ public class GWTPresenter implements Presenter {
                             recordsMap.put(record.getInstrument().getId(), children);
                         }
                         // display records on underlying instruments
+                        Collections.sort(uns, new Comparator<Record>() {
+                            @Override
+                            public int compare(Record first, Record second) {
+                                return first.getInstrument().getSymbol().compareTo(second.getInstrument().getSymbol());
+                            }
+                        });
                         for (Record record : uns) {
-                            view.addRecord(record);
+                            dataStore.getList().add(record);
                         }
                         schedulePoller(key);
                     }
@@ -144,7 +155,7 @@ public class GWTPresenter implements Presenter {
                     public void onSuccess(List<Record> result) {
                         for (Record record : result) {
                             if (record.getUnderlyingId() == null) {
-                                view.updateRecord(record);
+                                updateRecord(record);
                             } else {
                                 List<Record> existingRecords = recordsMap.get(record.getUnderlyingId());
                                 for (int i = 0; i < existingRecords.size(); i++) {
@@ -155,7 +166,7 @@ public class GWTPresenter implements Presenter {
                                     }
                                 }
                                 if (expandedNodes.contains(record.getUnderlyingId())) {
-                                    view.updateRecord(record);
+                                    updateRecord(record);
                                 }
                             }
                         }
@@ -169,5 +180,24 @@ public class GWTPresenter implements Presenter {
     @Override
     public void display(RootPanel panel) {
         panel.add(view.asWidget());
+    }
+
+    public boolean showIcon(int instrumentId) {
+        return !recordsMap.get(instrumentId).isEmpty();
+    }
+
+    public boolean isExpanded(int instrumentId) {
+        return expandedNodes.contains(instrumentId);
+    }
+
+    private void updateRecord(Record record) {
+        List<Record> store = dataStore.getList();
+        for (int i = 0; i < store.size(); i++) {
+            Record candidate = store.get(i);
+            if (candidate.getInstrument().equals(record.getInstrument())) {
+                store.set(i, record);
+                break;
+            }
+        }
     }
 }
