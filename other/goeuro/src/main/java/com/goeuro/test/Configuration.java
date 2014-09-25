@@ -1,12 +1,10 @@
+package com.goeuro.test;
+
 /**
  * Just a basic holder for some configuration parameters of the application.
  */
-public class Configuration {
-    private Configuration() {
-        // nop
-    }
-
-    public static final String BASE_API_URL = "https://api.goeuro.com/api/v1/suggest/position/en/name/";
+public final class Configuration {
+    public static final String BASE_API_URL = "http://api.goeuro.com/api/v2/position/suggest/en/";
     public static final String CHARSET = "UTF-8";
     public static final String OUTPUT_FILE_NAME = "suggestions.csv";
 }

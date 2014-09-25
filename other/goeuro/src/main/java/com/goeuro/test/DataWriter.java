@@ -1,27 +1,32 @@
+package com.goeuro.test;
+
 import com.google.common.base.Joiner;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
-/**
- * No wonders, it writes data.
- */
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class DataWriter {
 
     /**
      * Writes data as csv.
      *
-     * @param outputFile file to write to
-     * @param data       list of locations
+     * @param fileName file to write to
+     * @param data     list of locations
      * @throws IOException error while writing data
      */
-    public void writeCsv(File outputFile, List<Location> data) throws IOException {
+    public static void writeCsv(String fileName, List<Location> data) throws IOException {
+        checkNotNull(fileName, "fileName");
+        checkNotNull(data, "data");
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(outputFile), Configuration.CHARSET))) {
+                new FileOutputStream(fileName), Configuration.CHARSET))) {
             for (Location location : data) {
                 String csv = Joiner.on(",").join(
-                        location.get_type(),
-                        location.get_id(),
+                        location.getId(),
                         location.getName(),
                         location.getType(),
                         location.getCoordinates().getLatitude(),

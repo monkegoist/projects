@@ -1,27 +1,26 @@
-import java.io.File;
+package com.goeuro.test;
+
+import com.google.common.net.UrlEscapers;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
 
-/**
- * I thought I'd mention some of the things that could be improved / introduced given more time.
- * 1) use logging (f.e., log4j) instead of system.out
- * 2) introduce CsvAware interface with a single method asCsv() and make Location implement it so that
- * data writer can be generified
- * 3) exception handling could be improved to some extent, but any problem investigation will boil down
- * to stack trace investigation any way
- */
-public class Launcher {
+public final class Launcher {
+
+    private static final Logger log = LogManager.getLogger(Launcher.class);
 
     public static void main(String[] args) {
         validateInput(args);
         final String input = args[0];
+        log.info("User input: '" + input + "'");
 
         // 1. fetch data from server
         String serverResponse = null;
         try {
             DataFetcher dataFetcher = new DataFetcher();
-            serverResponse = dataFetcher.fetch(Configuration.BASE_API_URL + URLEncoder.encode(input, Configuration.CHARSET));
+            serverResponse = dataFetcher.fetch(Configuration.BASE_API_URL + UrlEscapers.urlFragmentEscaper().escape(input));
         } catch (Exception e) {
             exit("Failed to fetch suggestions for the given input", e);
         }
@@ -38,11 +37,11 @@ public class Launcher {
         // 3. save as csv
         assert locations != null;
         if (locations.isEmpty()) {
-            System.out.println("No locations were found");
+            log.info("Sorry, nothing found");
         } else {
             try {
-                new DataWriter().writeCsv(new File(Configuration.OUTPUT_FILE_NAME), locations);
-                System.out.println("Completed successfully! See '" + Configuration.OUTPUT_FILE_NAME + "' for results.");
+                DataWriter.writeCsv(Configuration.OUTPUT_FILE_NAME, locations);
+                log.info("Completed successfully! See '" + Configuration.OUTPUT_FILE_NAME + "' for results.");
             } catch (IOException e) {
                 exit("Failed to save data to file", e);
             }
@@ -51,15 +50,14 @@ public class Launcher {
 
     private static void validateInput(String[] args) {
         if (args.length != 1) {
-            System.out.println("Invalid number of arguments");
-            System.out.println("Usage: java -jar GoEuroTest.jar \"STRING\"");
+            log.error("Invalid number of arguments");
+            log.info("Usage: java -jar GoEuroTest.jar \"STRING\"");
             System.exit(1);
         }
     }
 
     private static void exit(String errorMessage, Exception cause) {
-        System.out.println(errorMessage);
-        cause.printStackTrace();
+        log.error(errorMessage, cause);
         System.exit(1);
     }
 }
